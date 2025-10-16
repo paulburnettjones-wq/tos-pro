@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney+, ESPN, and Hulu Subscriber Agreement Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --rose: #ff4081;
+            --rose-soft: #c95a7b;
+            --cyan: #4deeea;
+            --purple: #7c3aed;
+            --bg-dark: #181a24;
+            --bg-dark2: #232136;
+            --bg-light: #fff;
+            --text-dark: #232136;
+            --text-light: #e0d7e5;
+            --border-light: #e0e6ef;
+            --important-glow: #fffbe6;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode .score-card h2,
+        body.dark-mode .window-bar,
+        body.dark-mode .window-title {
+            font-family: 'Electrolize', Arial, sans-serif;
+        }
+        /* Layout */
+        .main-layout {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+            height: 100vh;
+        }
+
+        /* Score Card */
+        .score-card {
+            flex: 1.5 0 0;
+            background: #f7f8fa;
+            border-right: 1.5px solid var(--border-light);
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            position: relative;
+            transition: background 0.4s, color 0.4s, border 0.4s;
+            overflow: hidden;
+            align-items: stretch;
+        }
+
+        .score-card h2 {
+            font-size: 1.1em;
+            margin: 0 0 1em 0;
+            color: #0077b6;
+        }
+        .score-item {
+            margin-bottom: 1em;
+            width: 100%;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .score-value {
+            float: right;
+            font-weight: 700;
+            color: #0077b6;
+        }
+
+        .main-content {
+            flex: 4 1 0;
+            min-width: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            color: #1a233a;
+            margin-top: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.2em;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            border-left: 4px solid var(--border-light);
+            padding-left: 0.5em;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 1em 0;
+        }
+
+        ul, ol {
+            margin: 1em 0 1em 2em;
+        }
+
+        a {
+            color: #1a233a;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #0077b6;
+        }
+
+        pre, code {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Fira Mono', monospace;
+            color: #1a233a;
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            letter-spacing: 0.05em;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1em;
+        }
+
+        /* Clause Cards */
+        .clauses {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 2em;
+        }
+
+        .clause-card {
+            background: #f7f8fa;
+            border: 1.5px solid var(--border-light);
+            transition: background 0.4s, border 0.4s;
+            overflow: hidden;
+        }
+        .clause-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.08em;
+            color: var(--text-dark);
+            background: #f0f2f7;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .clause-title {
+            flex: 1;
+        }
+
+        .clause-score {
+            margin-left: 18px;
+            font-weight: 700;
+            color: #0077b6;
+            font-size: 1em;
+        }
+
+        .clause-toggle {
+            margin-left: 18px;
+            font-size: 1.2em;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .clause-card.open .clause-toggle {
+            transform: rotate(90deg);
+        }
+
+        .clause-content {
+            display: none;
+            padding: 18px 20px;
+            color: var(--text-dark);
+            background: #fff;
+            font-size: 1em;
+        }
+
+        .clause-card.open .clause-content {
+            display: block;
+        }
+
+        /* Mode Switch */
+        .mode-switch {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            z-index: 20;
+        }
+
+        .mode-switch button {
+            background: #f4f4f4;
+            color: var(--text-dark);
+            border: 1.5px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 0 4px var(--border-light);
+            transition: background 0.3s, color 0.3s, border-radius 0.3s;
+        }
+
+        .mode-switch button:hover {
+            background: var(--border-light);
+            color: #0077b6;
+        }
+
+        /* Window Bars - Light Mode */
+        .window-bar {
+            display: flex;
+            width: 100%;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            background: #f0f2f7;
+            border-bottom: 1px solid #e0e6ef;
+            align-items: center;
+            padding: 0 16px;
+            box-sizing: border-box;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window-title {
+            color: #8a90a0;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .window-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d4e0;
+            opacity: 0.5;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark2) 100%);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card {
+            background: var(--bg-dark2);
+            border-right: 1.5px solid var(--purple);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card h2 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-label {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-value {
+            color: var(--rose);
+        }
+
+        body.dark-mode .tldr-section {
+            border-top-color: var(--purple) !important;
+        }
+
+        body.dark-mode .tldr-section h3 {
+            color: var(--cyan) !important;
+        }
+
+        body.dark-mode .tldr-section p {
+            color: var(--text-light) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode h1 {
+            border-bottom: 2px solid var(--rose-soft);
+        }
+
+        body.dark-mode h2 {
+            border-left: 4px solid var(--purple);
+        }
+
+        body.dark-mode h3 {
+            color: var(--rose);
+        }
+
+        body.dark-mode a {
+            color: var(--rose);
+        }
+
+        body.dark-mode a:hover {
+            color: var(--cyan);
+        }
+
+        body.dark-mode pre,
+        body.dark-mode code {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border-left: 3px solid var(--purple);
+        }
+
+        body.dark-mode .footer {
+            color: var(--purple);
+            border-top: 1px solid var(--cyan);
+        }
+
+        body.dark-mode .clause-card {
+            background: var(--bg-dark2);
+            border: 1.5px solid var(--purple);
+        }
+
+        body.dark-mode .clause-header {
+            color: var(--cyan);
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--purple);
+        }
+
+        body.dark-mode .clause-score {
+            color: var(--rose);
+        }
+
+        body.dark-mode .clause-content {
+            color: var(--text-light);
+            background: var(--bg-dark2);
+        }
+
+        body.dark-mode .mode-switch button {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border: 1.5px solid var(--purple);
+            box-shadow: 0 0 4px var(--purple);
+            border-radius: 0;
+        }
+
+        body.dark-mode .mode-switch button:hover {
+            background: var(--bg-dark);
+            color: var(--rose);
+        }
+
+        body.dark-mode .window-bar {
+            background: #191a22;
+            border-bottom: 2px solid var(--purple);
+        }
+
+        body.dark-mode .window-title {
+            color: var(--cyan);
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        body.dark-mode .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--purple);
+            opacity: 0.7;
+        }
+
+        /* Glow Effect for Important Content */
+        .glow {
+            color: var(--important-glow);
+            text-shadow: 0 0 8px var(--rose), 0 0 2px var(--cyan);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Score Card -->
+        <div class="score-card">
+            <div class="window-bar">
+                <span class="window-title">Scorecard</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 40px 18px 18px 18px; flex: 1; display: flex; flex-direction: column; position: relative;">
+                <h2>Quick Read Scorecard</h2>
+                <div class="score-item">
+                    <span class="score-label">Overall Score</span>
+                    <span class="score-value">22/100</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Risk Level</span>
+                    <span class="score-value">High</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Read Time</span>
+                    <span class="score-value">5-10 min</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Key Issues</span>
+                    <span class="score-value">3</span>
+                </div>
+                
+                <div class="tldr-section" style="margin-top: 2em; padding-top: 1.5em; border-top: 1.5px solid var(--border-light); transition: border-color 0.4s;">
+                    <h3 style="font-size: 1em; margin: 0 0 0.8em 0; color: var(--text-dark); transition: color 0.4s;">TL;DR</h3>
+                    <p style="margin: 0; font-size: 0.95em; line-height: 1.6; color: var(--text-dark); transition: color 0.4s;">This ToS includes a critical mandatory individual arbitration clause and class action waiver, severely limiting your legal recourse. Key sections on data usage, full liability, and termination were not provided, preventing a complete assessment but raising concerns given typical industry practices. Expect automatic renewals and unilateral changes to terms and pricing.</p>
+                </div>
+            </div>
+
+            <div class="mode-switch">
+                <button id="modeToggle" aria-label="Toggle dark/light mode">🌞 Light</button>
+            </div>
+
+            <!-- Comparison Window -->
+            <div class="comparison-window" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="window-bar">
+                    <span class="window-title">Comparison</span>
+                    <span class="window-controls">
+                        <span class="window-dot"></span>
+                    </span>
+                </div>
+                <div style="padding: 12px 18px 18px 18px; flex: 1; overflow-y: auto;">
+                    <h3>How does this compare?</h3>
+                    <div class="comparison-content">
+                        This Subscriber Agreement is less consumer-friendly than average due to the inclusion of a mandatory individual arbitration clause and class action waiver, which is a significant drawback. While auto-renewal and unilateral term changes are common, the lack of transparency for critical sections like data usage and full liability makes it worse than many industry standards.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="window-bar">
+                <span class="window-title">Main Content</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 48px; flex: 1; display: flex; flex-direction: column;">
+                <h1>Disney+, ESPN, and Hulu Subscriber Agreement Analysis</h1>
+                <div class="clauses">
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Mandatory Arbitration and Class Action Waiver</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This is the most significant red flag in the agreement. It states: <strong>"ANY DISPUTE BETWEEN YOU AND US, EXCEPT FOR SMALL CLAIMS, IS SUBJECT TO A CLASS ACTION WAIVER AND MUST BE RESOLVED BY INDIVIDUAL BINDING ARBITRATION."</strong></p><ul><li><strong>Why it matters:</strong> This clause forces you to resolve nearly all disputes with Disney, ESPN, or Hulu through individual binding arbitration, rather than in court.</li><li><strong>Consumer Impact:</strong> <ul><li>You give up your right to a jury trial.</li><li>You cannot participate in class action lawsuits, meaning you cannot join with other affected consumers to seek redress for common issues. This significantly reduces your power against a large corporation.</li><li>Arbitration proceedings are often confidential, limiting public scrutiny of company practices.</li><li>Arbitration can be expensive and complex, potentially deterring individuals from pursuing claims.</li></ul></li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Changes to Terms</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The agreement allows the companies to amend the terms: <strong>"We may amend this Agreement, effective thirty (30) days after we send you notice or post the amendment on the Services. If you do not agree to any change to this Agreement, you must discontinue using the Services."</strong></p><ul><li><strong>Why it matters:</strong> The company can change the rules of the agreement at any time.</li><li><strong>Consumer Impact:</strong> <ul><li>While 30 days' notice is provided, you have no power to negotiate changes.</li><li>Your only recourse if you disagree with an amendment is to stop using the services, potentially losing access to content you've paid for or become accustomed to.</li><li>The notice can be given by simply "posting the amendment on the Services," which may be easily missed by users.</li></ul></li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Subscription Billing and Auto-Renewal</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The terms clearly state: <strong>"Your subscription(s) will automatically renew at the end of the disclosed billing period, unless cancelled... Payment will be charged to your chosen payment method at confirmation of purchase and at the start of every new billing period, unless cancelled."</strong> It also notes: <strong>"We reserve the right to change our pricing. In the event of a price change, we will attempt to notify you in advance... If you do not wish to accept a price change, you may cancel your subscription... If you do not timely cancel your subscription, your subscription will be renewed at the price."</strong></p><ul><li><strong>Why it matters:</strong> This outlines the automatic nature of your subscription and the company's right to change pricing.</li><li><strong>Consumer Impact:</strong> <ul><li>You are automatically enrolled in a recurring payment plan, requiring active cancellation to avoid charges.</li><li>The company can unilaterally increase prices, and your continued use (or failure to cancel) implies acceptance of the new price.</li><li>While notice of price changes is promised, the phrase "attempt to notify" leaves some room for error or missed communications.</li></ul></li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Account Security and User Responsibility</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The agreement states: <strong>"You are solely responsible for maintaining the confidentiality and security of your email address and password and for all activities that occur on or through your account... We will not be responsible for any losses arising from the unauthorized use of your account."</strong></p><ul><li><strong>Why it matters:</strong> This clause places full responsibility for account security on the user.</li><li><strong>Consumer Impact:</strong> <ul><li>While users should protect their credentials, this clause broadly absolves the company of responsibility for losses, even if unauthorized access occurs due to a system vulnerability or breach on their end (though this specific wording doesn't explicitly cover that, it's a common interpretation).</li><li>It means you bear the financial and personal data risks if your account is compromised, even if you notify them immediately.</li></ul></li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Use and Sharing of Certain Information (Data Usage/Privacy)</span>
+                            <span class="clause-score">Content Not Provided</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>A section titled <strong>"Use and Sharing of Certain Information"</strong> is listed in the table of contents, but the actual content of this crucial clause was not provided in the document for analysis.</p><ul><li><strong>Why it matters:</strong> This section would detail how your personal data is collected, used, stored, and shared with third parties, including other Disney Family of Companies entities.</li><li><strong>Consumer Impact:</strong> Without this content, it's impossible to assess the privacy implications. Given that the services are integrated with "MyDisney" and involve a large media conglomerate, it is highly probable that extensive data collection and sharing practices are in place. This lack of transparency is a significant concern, as data privacy is a major consumer right.</li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Suspension and Termination</span>
+                            <span class="clause-score">Content Not Provided</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>A section titled <strong>"Suspension and Termination"</strong> is listed in the table of contents, but the actual content of this clause was not provided in the document for analysis.</p><ul><li><strong>Why it matters:</strong> This section would outline the conditions under which your access to the services can be suspended or terminated by the company, as well as any rights you might have regarding data or refunds upon termination.</li><li><strong>Consumer Impact:</strong> Without this content, it's impossible to assess the fairness of the company's power to suspend or terminate your account. Typically, such clauses grant broad discretion to the company, often without requiring specific reasons or providing a clear appeals process for the user.</li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Copyright License Grant and Restrictions</span>
+                            <span class="clause-score">Content Not Provided</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>A section titled <strong>"Copyright License Grant and Restrictions"</strong> is listed in the table of contents, but the actual content of this clause was not provided in the document for analysis.</p><ul><li><strong>Why it matters:</strong> This section would detail your rights and limitations regarding the content provided through the services.</li><li><strong>Consumer Impact:</strong> Without this content, it's impossible to assess specific restrictions on how you can use, share, or interact with the copyrighted material, which could impact fair use or personal enjoyment.</li></ul></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Additional Provisions</span>
+                            <span class="clause-score">Content Not Provided</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>A section titled <strong>"Additional Provisions"</strong> is listed in the table of contents, but the actual content of this clause was not provided in the document for analysis.</p><ul><li><strong>Why it matters:</strong> This catch-all section often contains important legal boilerplate, such as governing law, severability, entire agreement clauses, and potentially disclaimers of warranties or limitations of liability.</li><li><strong>Consumer Impact:</strong> Without this content, a full legal assessment is incomplete. It's common for critical clauses like warranty disclaimers and comprehensive liability limitations to be found here, which can significantly impact consumer rights.</li></ul></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <p>This Disney+, ESPN, and Hulu Subscriber Agreement presents a high level of risk for consumers, primarily due to the inclusion of a <strong>mandatory individual binding arbitration clause and class action waiver</strong>. This single clause severely restricts your ability to seek legal recourse against the companies, forcing you into private arbitration and preventing you from joining collective lawsuits. This is a critical red flag that significantly diminishes consumer rights and power.</p><p>Beyond the arbitration clause, the agreement contains other concerning provisions. The companies reserve the right to <strong>unilaterally change the terms and pricing</strong> with notice, placing the onus on the consumer to monitor updates and cancel if they disagree. While auto-renewal is standard for subscription services, the combination with unilateral price changes requires vigilance. Furthermore, the agreement places <strong>sole responsibility for account security</strong> on the user, broadly absolving the company of losses from unauthorized use.</p><p>A major limitation of this analysis is the <strong>absence of content for several crucial sections</strong>, including "Use and Sharing of Certain Information" (data privacy), "Suspension and Termination," "Copyright License Grant and Restrictions," and "Additional Provisions." Without these details, a comprehensive assessment of consumer impact is impossible. Given the practices of large media companies, it is reasonable to assume that the missing data privacy and liability clauses, if present, would likely contain terms that are not highly consumer-friendly, further contributing to the overall high-risk assessment.</p><p>In summary, while the services offered are for personal enjoyment, the legal framework is heavily skewed in favor of the providers. The mandatory arbitration and class action waiver are particularly detrimental to consumer rights. Users should be aware of these significant limitations and the lack of transparency regarding key operational and privacy policies before agreeing to these terms.</p>
+                </div>
+                <div class="footer">
+                    Generated on October 16, 2025
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modeToggle = document.getElementById('modeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        function setMode(dark) {
+            document.body.classList.toggle('dark-mode', dark);
+            modeToggle.textContent = dark ? '🌙 Dark' : '🌞 Light';
+        }
+        
+        // Load mode from localStorage or system preference
+        const savedMode = localStorage.getItem('darkMode');
+        const darkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+        setMode(darkMode);
+        
+        modeToggle.addEventListener('click', () => {
+            const newMode = !document.body.classList.contains('dark-mode');
+            setMode(newMode);
+            localStorage.setItem('darkMode', newMode);
+        });
+    </script>
+</body>
+</html>

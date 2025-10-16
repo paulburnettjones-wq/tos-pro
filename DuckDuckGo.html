@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuckDuckGo Terms of Service Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --rose: #ff4081;
+            --rose-soft: #c95a7b;
+            --cyan: #4deeea;
+            --purple: #7c3aed;
+            --bg-dark: #181a24;
+            --bg-dark2: #232136;
+            --bg-light: #fff;
+            --text-dark: #232136;
+            --text-light: #e0d7e5;
+            --border-light: #e0e6ef;
+            --important-glow: #fffbe6;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode .score-card h2,
+        body.dark-mode .window-bar,
+        body.dark-mode .window-title {
+            font-family: 'Electrolize', Arial, sans-serif;
+        }
+        /* Layout */
+        .main-layout {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+            height: 100vh;
+        }
+
+        /* Score Card */
+        .score-card {
+            flex: 1.5 0 0;
+            background: #f7f8fa;
+            border-right: 1.5px solid var(--border-light);
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            position: relative;
+            transition: background 0.4s, color 0.4s, border 0.4s;
+            overflow: hidden;
+            align-items: stretch;
+        }
+
+        .score-card h2 {
+            font-size: 1.1em;
+            margin: 0 0 1em 0;
+            color: #0077b6;
+        }
+        .score-item {
+            margin-bottom: 1em;
+            width: 100%;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .score-value {
+            float: right;
+            font-weight: 700;
+            color: #0077b6;
+        }
+
+        .main-content {
+            flex: 4 1 0;
+            min-width: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            color: #1a233a;
+            margin-top: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.2em;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            border-left: 4px solid var(--border-light);
+            padding-left: 0.5em;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 1em 0;
+        }
+
+        ul, ol {
+            margin: 1em 0 1em 2em;
+        }
+
+        a {
+            color: #1a233a;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #0077b6;
+        }
+
+        pre, code {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Fira Mono', monospace;
+            color: #1a233a;
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            letter-spacing: 0.05em;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1em;
+        }
+
+        /* Clause Cards */
+        .clauses {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 2em;
+        }
+
+        .clause-card {
+            background: #f7f8fa;
+            border: 1.5px solid var(--border-light);
+            transition: background 0.4s, border 0.4s;
+            overflow: hidden;
+        }
+        .clause-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.08em;
+            color: var(--text-dark);
+            background: #f0f2f7;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .clause-title {
+            flex: 1;
+        }
+
+        .clause-score {
+            margin-left: 18px;
+            font-weight: 700;
+            color: #0077b6;
+            font-size: 1em;
+        }
+
+        .clause-toggle {
+            margin-left: 18px;
+            font-size: 1.2em;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .clause-card.open .clause-toggle {
+            transform: rotate(90deg);
+        }
+
+        .clause-content {
+            display: none;
+            padding: 18px 20px;
+            color: var(--text-dark);
+            background: #fff;
+            font-size: 1em;
+        }
+
+        .clause-card.open .clause-content {
+            display: block;
+        }
+
+        /* Mode Switch */
+        .mode-switch {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            z-index: 20;
+        }
+
+        .mode-switch button {
+            background: #f4f4f4;
+            color: var(--text-dark);
+            border: 1.5px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 0 4px var(--border-light);
+            transition: background 0.3s, color 0.3s, border-radius 0.3s;
+        }
+
+        .mode-switch button:hover {
+            background: var(--border-light);
+            color: #0077b6;
+        }
+
+        /* Window Bars - Light Mode */
+        .window-bar {
+            display: flex;
+            width: 100%;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            background: #f0f2f7;
+            border-bottom: 1px solid #e0e6ef;
+            align-items: center;
+            padding: 0 16px;
+            box-sizing: border-box;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window-title {
+            color: #8a90a0;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .window-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d4e0;
+            opacity: 0.5;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark2) 100%);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card {
+            background: var(--bg-dark2);
+            border-right: 1.5px solid var(--purple);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card h2 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-label {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-value {
+            color: var(--rose);
+        }
+
+        body.dark-mode .tldr-section {
+            border-top-color: var(--purple) !important;
+        }
+
+        body.dark-mode .tldr-section h3 {
+            color: var(--cyan) !important;
+        }
+
+        body.dark-mode .tldr-section p {
+            color: var(--text-light) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode h1 {
+            border-bottom: 2px solid var(--rose-soft);
+        }
+
+        body.dark-mode h2 {
+            border-left: 4px solid var(--purple);
+        }
+
+        body.dark-mode h3 {
+            color: var(--rose);
+        }
+
+        body.dark-mode a {
+            color: var(--rose);
+        }
+
+        body.dark-mode a:hover {
+            color: var(--cyan);
+        }
+
+        body.dark-mode pre,
+        body.dark-mode code {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border-left: 3px solid var(--purple);
+        }
+
+        body.dark-mode .footer {
+            color: var(--purple);
+            border-top: 1px solid var(--cyan);
+        }
+
+        body.dark-mode .clause-card {
+            background: var(--bg-dark2);
+            border: 1.5px solid var(--purple);
+        }
+
+        body.dark-mode .clause-header {
+            color: var(--cyan);
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--purple);
+        }
+
+        body.dark-mode .clause-score {
+            color: var(--rose);
+        }
+
+        body.dark-mode .clause-content {
+            color: var(--text-light);
+            background: var(--bg-dark2);
+        }
+
+        body.dark-mode .mode-switch button {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border: 1.5px solid var(--purple);
+            box-shadow: 0 0 4px var(--purple);
+            border-radius: 0;
+        }
+
+        body.dark-mode .mode-switch button:hover {
+            background: var(--bg-dark);
+            color: var(--rose);
+        }
+
+        body.dark-mode .window-bar {
+            background: #191a22;
+            border-bottom: 2px solid var(--purple);
+        }
+
+        body.dark-mode .window-title {
+            color: var(--cyan);
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        body.dark-mode .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--purple);
+            opacity: 0.7;
+        }
+
+        /* Glow Effect for Important Content */
+        .glow {
+            color: var(--important-glow);
+            text-shadow: 0 0 8px var(--rose), 0 0 2px var(--cyan);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Score Card -->
+        <div class="score-card">
+            <div class="window-bar">
+                <span class="window-title">Scorecard</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 40px 18px 18px 18px; flex: 1; display: flex; flex-direction: column; position: relative;">
+                <h2>Quick Read Scorecard</h2>
+                <div class="score-item">
+                    <span class="score-label">Overall Score</span>
+                    <span class="score-value">71/100</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Risk Level</span>
+                    <span class="score-value">Medium</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Read Time</span>
+                    <span class="score-value">5-10 min</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Key Issues</span>
+                    <span class="score-value">3</span>
+                </div>
+                
+                <div class="tldr-section" style="margin-top: 2em; padding-top: 1.5em; border-top: 1.5px solid var(--border-light); transition: border-color 0.4s;">
+                    <h3 style="font-size: 1em; margin: 0 0 0.8em 0; color: var(--text-dark); transition: color 0.4s;">TL;DR</h3>
+                    <p style="margin: 0; font-size: 0.95em; line-height: 1.6; color: var(--text-dark); transition: color 0.4s;">DuckDuckGo's ToS is concise and aligns with its strong privacy stance, explicitly stating 'we don't track you.' However, it features significant consumer-unfriendly clauses, including a broad disclaimer of warranties and a highly restrictive limitation of liability, capping potential damages at just $100 for most users. Users also bear the burden of checking for term changes, as notification is passive.</p>
+                </div>
+            </div>
+
+            <div class="mode-switch">
+                <button id="modeToggle" aria-label="Toggle dark/light mode">🌞 Light</button>
+            </div>
+
+            <!-- Comparison Window -->
+            <div class="comparison-window" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="window-bar">
+                    <span class="window-title">Comparison</span>
+                    <span class="window-controls">
+                        <span class="window-dot"></span>
+                    </span>
+                </div>
+                <div style="padding: 12px 18px 18px 18px; flex: 1; overflow-y: auto;">
+                    <h3>How does this compare?</h3>
+                    <div class="comparison-content">
+                        Compared to typical industry standards, DuckDuckGo's ToS stands out positively for its explicit commitment to user privacy. However, its disclaimers of warranty and limitations of liability are standardly unfavorable, and in some aspects, like the $100 liability cap for free users, are more restrictive than many competitors, shifting substantial risk onto the user.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="window-bar">
+                <span class="window-title">Main Content</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 48px; flex: 1; display: flex; flex-direction: column;">
+                <h1>DuckDuckGo Terms of Service Analysis</h1>
+                <div class="clauses">
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Privacy Statement (Reference to Privacy Policy)</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This section highlights DuckDuckGo's core privacy promise: <strong>'We don't track you.'</strong> It directs users to the separate Privacy Policy for detailed information on data practices. While the ToS itself doesn't delve into specifics, this explicit statement and the company's reputation for privacy are significant positives for consumers.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">User Conduct and Termination</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>Users are required to comply with these Terms, an Acceptable Use Policy, and export controls. DuckDuckGo reserves the right to <strong>suspend or terminate access at any time if these Terms are violated.</strong> While standard, the broad nature of 'violate these Terms' can be subjective, giving the company significant discretion over user access without requiring specific, egregious offenses.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">User Feedback</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>If users provide feedback, they grant DuckDuckGo a <strong>'forever license' to use their input to improve services without any payment or credit.</strong> This is a common clause in many services, but it means users waive any intellectual property rights or claims to compensation for their ideas, even if they significantly contribute to product development.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Intellectual Property Rights</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>DuckDuckGo retains all intellectual property rights to its Services and trademarks (e.g., DUCKDUCKGO, Dax the Duck). Users are <strong>not granted any rights to use these trademarks</strong> by using the services. This is a standard and fair clause, protecting the company's brand and proprietary technology.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Third-Party Content and Disclaimers</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>DuckDuckGo states it is <strong>not responsible for content from or created by third parties</strong>, such as search results or Instant Answers. It cannot guarantee the accuracy, completeness, or safety of third-party websites. This means users bear the risk when interacting with external content accessed through DuckDuckGo's services, which is a significant consideration for a search engine.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Disclaimer of Warranties</span>
+                            <span class="clause-score">Bad</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause broadly states that DuckDuckGo <strong>disclaims all warranties, express or implied</strong>, and provides its services 'as is' and 'as available,' 'with all faults.' This means there are <strong>no guarantees about the service's performance, reliability, security, or fitness for any particular purpose.</strong> It places all risk regarding the quality and performance of the services squarely on the user.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Limitation of Liability</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>DuckDuckGo severely limits its liability for various types of damages, including indirect, consequential, special, incidental, punitive, or exemplary damages (e.g., lost profits, lost savings). Furthermore, its <strong>maximum aggregate liability is capped at the amount paid by the user in the prior 12 months, or $100 if no payments were made.</strong> This clause is highly unfavorable to consumers, as it drastically limits their ability to seek compensation for potential harm or losses, even if caused by DuckDuckGo's negligence.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Force Majeure</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>DuckDuckGo will not be liable for delays or interruptions in service caused by events outside of its control (e.g., natural disasters, acts of war). This is a <strong>standard and reasonable legal protection</strong> for companies against unforeseen circumstances.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Governing Law and Jurisdiction</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>Any claims associated with the services must be filed in <strong>state or federal courts in New York, New York, USA, and New York law will govern.</strong> While the absence of a mandatory arbitration clause is a positive, this exclusive jurisdiction can be inconvenient and costly for users located outside of New York or the United States, potentially hindering their ability to pursue legal recourse.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Severability</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>If any part of these Terms is found to be void or unenforceable, it <strong>will not affect the validity of the other Terms.</strong> This is a standard legal provision designed to ensure that the entire agreement doesn't collapse if one specific clause is deemed invalid.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Changes to Terms</span>
+                            <span class="clause-score">Bad</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>DuckDuckGo reserves the right to change these Terms by <strong>simply posting the modified version on its website.</strong> Continued use of the services after changes constitutes consent and agreement to the new terms. This places the burden on users to regularly check for updates, as there is no requirement for active notification or explicit agreement to new terms, which is a less consumer-friendly approach.</p></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <p>DuckDuckGo's Terms of Service presents a mixed bag for consumers. On the one hand, it aligns strongly with the company's core mission of privacy, explicitly stating 'we don't track you' and directing users to a comprehensive Privacy Policy. This commitment to user data protection is a significant positive, setting it apart from many industry peers.</p><p>However, the document contains several clauses that are notably unfavorable to the consumer. The most critical concern is the <strong>extremely restrictive Limitation of Liability</strong>, which caps potential damages at a mere $100 for most users who do not pay for services. This, coupled with a broad Disclaimer of Warranties, means users have very limited recourse for any issues, damages, or service failures, placing substantial risk on them.</p><p>Furthermore, the method for <strong>Changes to Terms is passive</strong>, requiring users to actively monitor the website for updates, and continued use implies consent. While the absence of a mandatory arbitration clause is a positive, the exclusive jurisdiction in New York courts could be a barrier for international users. Overall, while DuckDuckGo excels in its privacy stance, consumers should be aware of the significant limitations on their rights and remedies outlined in these terms, particularly concerning liability and service guarantees.</p>
+                </div>
+                <div class="footer">
+                    Generated on October 16, 2025
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modeToggle = document.getElementById('modeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        function setMode(dark) {
+            document.body.classList.toggle('dark-mode', dark);
+            modeToggle.textContent = dark ? '🌙 Dark' : '🌞 Light';
+        }
+        
+        // Load mode from localStorage or system preference
+        const savedMode = localStorage.getItem('darkMode');
+        const darkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+        setMode(darkMode);
+        
+        modeToggle.addEventListener('click', () => {
+            const newMode = !document.body.classList.contains('dark-mode');
+            setMode(newMode);
+            localStorage.setItem('darkMode', newMode);
+        });
+    </script>
+</body>
+</html>

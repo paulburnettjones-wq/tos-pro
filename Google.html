@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Terms of Service Analysis (Partial Document)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --rose: #ff4081;
+            --rose-soft: #c95a7b;
+            --cyan: #4deeea;
+            --purple: #7c3aed;
+            --bg-dark: #181a24;
+            --bg-dark2: #232136;
+            --bg-light: #fff;
+            --text-dark: #232136;
+            --text-light: #e0d7e5;
+            --border-light: #e0e6ef;
+            --important-glow: #fffbe6;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode .score-card h2,
+        body.dark-mode .window-bar,
+        body.dark-mode .window-title {
+            font-family: 'Electrolize', Arial, sans-serif;
+        }
+        /* Layout */
+        .main-layout {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+            height: 100vh;
+        }
+
+        /* Score Card */
+        .score-card {
+            flex: 1.5 0 0;
+            background: #f7f8fa;
+            border-right: 1.5px solid var(--border-light);
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            position: relative;
+            transition: background 0.4s, color 0.4s, border 0.4s;
+            overflow: hidden;
+            align-items: stretch;
+        }
+
+        .score-card h2 {
+            font-size: 1.1em;
+            margin: 0 0 1em 0;
+            color: #0077b6;
+        }
+        .score-item {
+            margin-bottom: 1em;
+            width: 100%;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .score-value {
+            float: right;
+            font-weight: 700;
+            color: #0077b6;
+        }
+
+        .main-content {
+            flex: 4 1 0;
+            min-width: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            color: #1a233a;
+            margin-top: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.2em;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            border-left: 4px solid var(--border-light);
+            padding-left: 0.5em;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 1em 0;
+        }
+
+        ul, ol {
+            margin: 1em 0 1em 2em;
+        }
+
+        a {
+            color: #1a233a;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #0077b6;
+        }
+
+        pre, code {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Fira Mono', monospace;
+            color: #1a233a;
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            letter-spacing: 0.05em;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1em;
+        }
+
+        /* Clause Cards */
+        .clauses {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 2em;
+        }
+
+        .clause-card {
+            background: #f7f8fa;
+            border: 1.5px solid var(--border-light);
+            transition: background 0.4s, border 0.4s;
+            overflow: hidden;
+        }
+        .clause-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.08em;
+            color: var(--text-dark);
+            background: #f0f2f7;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .clause-title {
+            flex: 1;
+        }
+
+        .clause-score {
+            margin-left: 18px;
+            font-weight: 700;
+            color: #0077b6;
+            font-size: 1em;
+        }
+
+        .clause-toggle {
+            margin-left: 18px;
+            font-size: 1.2em;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .clause-card.open .clause-toggle {
+            transform: rotate(90deg);
+        }
+
+        .clause-content {
+            display: none;
+            padding: 18px 20px;
+            color: var(--text-dark);
+            background: #fff;
+            font-size: 1em;
+        }
+
+        .clause-card.open .clause-content {
+            display: block;
+        }
+
+        /* Mode Switch */
+        .mode-switch {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            z-index: 20;
+        }
+
+        .mode-switch button {
+            background: #f4f4f4;
+            color: var(--text-dark);
+            border: 1.5px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 0 4px var(--border-light);
+            transition: background 0.3s, color 0.3s, border-radius 0.3s;
+        }
+
+        .mode-switch button:hover {
+            background: var(--border-light);
+            color: #0077b6;
+        }
+
+        /* Window Bars - Light Mode */
+        .window-bar {
+            display: flex;
+            width: 100%;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            background: #f0f2f7;
+            border-bottom: 1px solid #e0e6ef;
+            align-items: center;
+            padding: 0 16px;
+            box-sizing: border-box;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window-title {
+            color: #8a90a0;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .window-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d4e0;
+            opacity: 0.5;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark2) 100%);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card {
+            background: var(--bg-dark2);
+            border-right: 1.5px solid var(--purple);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card h2 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-label {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-value {
+            color: var(--rose);
+        }
+
+        body.dark-mode .tldr-section {
+            border-top-color: var(--purple) !important;
+        }
+
+        body.dark-mode .tldr-section h3 {
+            color: var(--cyan) !important;
+        }
+
+        body.dark-mode .tldr-section p {
+            color: var(--text-light) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode h1 {
+            border-bottom: 2px solid var(--rose-soft);
+        }
+
+        body.dark-mode h2 {
+            border-left: 4px solid var(--purple);
+        }
+
+        body.dark-mode h3 {
+            color: var(--rose);
+        }
+
+        body.dark-mode a {
+            color: var(--rose);
+        }
+
+        body.dark-mode a:hover {
+            color: var(--cyan);
+        }
+
+        body.dark-mode pre,
+        body.dark-mode code {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border-left: 3px solid var(--purple);
+        }
+
+        body.dark-mode .footer {
+            color: var(--purple);
+            border-top: 1px solid var(--cyan);
+        }
+
+        body.dark-mode .clause-card {
+            background: var(--bg-dark2);
+            border: 1.5px solid var(--purple);
+        }
+
+        body.dark-mode .clause-header {
+            color: var(--cyan);
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--purple);
+        }
+
+        body.dark-mode .clause-score {
+            color: var(--rose);
+        }
+
+        body.dark-mode .clause-content {
+            color: var(--text-light);
+            background: var(--bg-dark2);
+        }
+
+        body.dark-mode .mode-switch button {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border: 1.5px solid var(--purple);
+            box-shadow: 0 0 4px var(--purple);
+            border-radius: 0;
+        }
+
+        body.dark-mode .mode-switch button:hover {
+            background: var(--bg-dark);
+            color: var(--rose);
+        }
+
+        body.dark-mode .window-bar {
+            background: #191a22;
+            border-bottom: 2px solid var(--purple);
+        }
+
+        body.dark-mode .window-title {
+            color: var(--cyan);
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        body.dark-mode .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--purple);
+            opacity: 0.7;
+        }
+
+        /* Glow Effect for Important Content */
+        .glow {
+            color: var(--important-glow);
+            text-shadow: 0 0 8px var(--rose), 0 0 2px var(--cyan);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Score Card -->
+        <div class="score-card">
+            <div class="window-bar">
+                <span class="window-title">Scorecard</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 40px 18px 18px 18px; flex: 1; display: flex; flex-direction: column; position: relative;">
+                <h2>Quick Read Scorecard</h2>
+                <div class="score-item">
+                    <span class="score-label">Overall Score</span>
+                    <span class="score-value">25/100</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Risk Level</span>
+                    <span class="score-value">Critical</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Read Time</span>
+                    <span class="score-value">5-7 min</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Key Issues</span>
+                    <span class="score-value">6</span>
+                </div>
+                
+                <div class="tldr-section" style="margin-top: 2em; padding-top: 1.5em; border-top: 1.5px solid var(--border-light); transition: border-color 0.4s;">
+                    <h3 style="font-size: 1em; margin: 0 0 0.8em 0; color: var(--text-dark); transition: color 0.4s;">TL;DR</h3>
+                    <p style="margin: 0; font-size: 0.95em; line-height: 1.6; color: var(--text-dark); transition: color 0.4s;">This analysis is severely hampered by a truncated Google Terms of Service document. Critical clauses concerning user content rights (especially for AI/ML training), liability limitations, warranties, and dispute resolution are entirely missing, preventing a comprehensive assessment and raising significant consumer protection red flags.</p>
+                </div>
+            </div>
+
+            <div class="mode-switch">
+                <button id="modeToggle" aria-label="Toggle dark/light mode">🌞 Light</button>
+            </div>
+
+            <!-- Comparison Window -->
+            <div class="comparison-window" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="window-bar">
+                    <span class="window-title">Comparison</span>
+                    <span class="window-controls">
+                        <span class="window-dot"></span>
+                    </span>
+                </div>
+                <div style="padding: 12px 18px 18px 18px; flex: 1; overflow-y: auto;">
+                    <h3>How does this compare?</h3>
+                    <div class="comparison-content">
+                        Due to the severe truncation, a full comparison to typical industry standards is impossible. However, the absence of crucial consumer protection clauses makes this document, as presented, significantly less transparent and potentially more risky than what most companies provide, even if their full terms are often unfavorable.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="window-bar">
+                <span class="window-title">Main Content</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 48px; flex: 1; display: flex; flex-direction: column;">
+                <h1>Google Terms of Service Analysis (Partial Document)</h1>
+                <div class="clauses">
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Introduction &amp; Scope</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This section serves as a standard introduction, outlining the purpose of the terms and stating that by accessing or using Google services, you agree to them. It also directs users to the separate Privacy Policy for a better understanding of data management.</p><p><strong>Consumer Impact:</strong> This is a standard and clear introductory clause, setting the stage for the agreement.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Service Provider &amp; Age Requirements</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause identifies Google LLC as the service provider, organized under the laws of the State of Delaware, USA. It also sets standard age requirements, noting that minors must have parental or legal guardian permission to use a Google Account, and parents are responsible for their child's activity on the services.</p><p><strong>Consumer Impact:</strong> These are standard legal and age-related provisions, generally consumer-friendly and clear.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Service Development, Updates &amp; AI/ML Usage (Google's Side)</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>Google commits to continually developing, improving, and updating its services, including using <strong>artificial intelligence and machine learning</strong> for features like simultaneous translations and spam/malware detection. The terms state that software may update automatically, and Google will provide reasonable advance notice for material changes that negatively impact users or if a service is discontinued. Users are also offered the opportunity to export their content from their Google Account using Google Takeout.</p><p><strong>Consumer Impact:</strong> The use of AI/ML for internal service improvement (e.g., spam detection, translations) is generally acceptable. The commitment to advance notice for significant changes and the provision of Google Takeout for data export are positive, consumer-friendly aspects that offer users some control and transparency.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">User Conduct &amp; Prohibited Activities (AI/ML Implications)</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This section outlines what Google expects from users, including following terms, respecting intellectual property and privacy rights, and refraining from abuse or harm. It lists specific prohibited activities such as introducing malware, spamming, hacking, and bypassing systems. Notably, it specifically prohibits <strong>'jailbreaking, adversarial prompting, or prompt injection'</strong> (except as part of safety and bug testing programs) and <strong>'misleading others into thinking that generative AI content was created by a human.'</strong> It also references a separate Generative AI Prohibited Use Policy.</p><p><strong>Consumer Impact:</strong> These are generally reasonable expectations for user conduct, aimed at maintaining platform integrity and safety. The specific prohibitions related to AI misuse are standard for platforms incorporating generative AI and help protect against deceptive practices and system abuse.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Google's Intellectual Property</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause clearly states that while Google grants users permission to use its services, it retains all intellectual property rights it has in those services.</p><p><strong>Consumer Impact:</strong> This is a standard legal clause, affirming Google's ownership of its platform and technologies. It does not impact user ownership of their own content.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Missing Critical Clause: User Content Rights &amp; Licensing (AI/ML Training Data)</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This crucial section, which typically details how Google can use content users upload or create within its services, is <strong>entirely missing</strong> from the provided document. This includes vital information on whether user content can be used for <strong>training Google's AI/ML models</strong>, how licenses are granted to Google, and the scope of those licenses.</p><p><strong>Consumer Impact:</strong> The absence of this clause is a <strong>major red flag</strong>. Without it, consumers have no clear understanding of Google's rights over their personal data and creations, especially in the context of AI development. This creates significant uncertainty regarding data privacy, intellectual property, and potential commercial exploitation of user content, which is a critical consumer concern in the age of generative AI.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Missing Critical Clause: Warranties &amp; Disclaimers</span>
+                            <span class="clause-score">Bad</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This section, which typically outlines what Google does and does not guarantee about its services (e.g., fitness for a particular purpose, uninterrupted service, accuracy), is <strong>missing</strong>. While most companies disclaim extensive warranties, the complete absence of this clause leaves a significant gap.</p><p><strong>Consumer Impact:</strong> Without clear warranty disclaimers, there's a lack of transparency regarding the reliability and performance expectations of the services. While its absence might theoretically imply unlimited warranty, it's far more likely to be a critical omission that, if present, would heavily favor Google by limiting its responsibilities.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Missing Critical Clause: Limitation of Liability</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This extremely important clause, which limits Google's financial responsibility for any damages or losses incurred by users due to service use or issues, is <strong>entirely missing</strong>. These clauses typically cap liability or exclude certain types of damages (e.g., indirect, consequential, punitive).</p><p><strong>Consumer Impact:</strong> The absence of a limitation of liability clause is a <strong>critical concern</strong>. Consumers are left without clarity on their recourse or Google's accountability in case of service failures, data breaches, or other harms. If present, such clauses are almost always heavily skewed in favor of the company, making its omission here a significant unknown risk for consumers.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Missing Critical Clause: Dispute Resolution (Arbitration, Class Action Waiver)</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This vital section, which dictates how legal disputes between users and Google are resolved (e.g., through mandatory binding arbitration, small claims court, or prohibiting class action lawsuits), is <strong>completely absent</strong> from the provided document.</p><p><strong>Consumer Impact:</strong> This is a <strong>critical red flag</strong>. Mandatory arbitration clauses and class action waivers are common in tech ToS and significantly limit a consumer's ability to seek redress in court. Their absence here means we cannot assess whether consumers retain their right to sue or participate in class actions, which is a fundamental aspect of consumer protection. The lack of information on governing law is also a major concern.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Missing Critical Clause: Changes to Terms</span>
+                            <span class="clause-score">Bad</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The mechanism by which Google can modify these Terms of Service and how users are notified of such changes is <strong>missing</strong>. Most ToS allow companies to unilaterally change terms, often with minimal notice, which can impact user rights significantly.</p><p><strong>Consumer Impact:</strong> Without this clause, consumers have no clear understanding of how and when the terms they agreed to might change, potentially impacting their rights without adequate warning or opportunity to review. This lack of transparency is concerning.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Missing Critical Clause: Termination of Services/Accounts</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>Details regarding how Google can terminate a user's access to services or how a user can close their own account are <strong>missing</strong>. This typically includes reasons for termination by Google (e.g., violation of terms) and the process for data retrieval post-termination.</p><p><strong>Consumer Impact:</strong> The absence of this clause leaves users unclear about the security of their accounts and data, and their rights should Google decide to terminate their access. It also means the process for users to voluntarily leave the service is not defined, which can be a point of friction.</p></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <p>This analysis of Google's Terms of Service is severely limited by the fact that the provided document is <strong>incomplete and truncated</strong>. While the available sections are generally clear and contain some consumer-friendly elements (like the commitment to Google Takeout for data export and advance notice for material service changes), the absence of several critical clauses prevents a comprehensive and accurate assessment of consumer protection.</p><p>The most significant concerns stem from the <strong>missing sections</strong> on <strong>User Content Rights & Licensing</strong> (especially regarding AI/ML training data), <strong>Limitation of Liability</strong>, <strong>Warranties & Disclaimers</strong>, and crucially, <strong>Dispute Resolution</strong>. These clauses are fundamental to defining consumer rights, recourse, and Google's accountability. Without them, users have no clear understanding of how their data and content might be used, what protections they have in case of service issues, or how they can seek legal redress.</p><p>Therefore, based solely on the provided partial text, the Terms of Service document presents a <strong>Critical risk level</strong>. A full and fair evaluation is impossible, and the lack of transparency on such vital consumer protection aspects is highly problematic. Consumers should be extremely cautious and seek the complete, official document to understand their full rights and obligations before agreeing to use Google's services.</p>
+                </div>
+                <div class="footer">
+                    Generated on October 16, 2025
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modeToggle = document.getElementById('modeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        function setMode(dark) {
+            document.body.classList.toggle('dark-mode', dark);
+            modeToggle.textContent = dark ? '🌙 Dark' : '🌞 Light';
+        }
+        
+        // Load mode from localStorage or system preference
+        const savedMode = localStorage.getItem('darkMode');
+        const darkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+        setMode(darkMode);
+        
+        modeToggle.addEventListener('click', () => {
+            const newMode = !document.body.classList.contains('dark-mode');
+            setMode(newMode);
+            localStorage.setItem('darkMode', newMode);
+        });
+    </script>
+</body>
+</html>

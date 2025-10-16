@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyft Terms of Service Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --rose: #ff4081;
+            --rose-soft: #c95a7b;
+            --cyan: #4deeea;
+            --purple: #7c3aed;
+            --bg-dark: #181a24;
+            --bg-dark2: #232136;
+            --bg-light: #fff;
+            --text-dark: #232136;
+            --text-light: #e0d7e5;
+            --border-light: #e0e6ef;
+            --important-glow: #fffbe6;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode .score-card h2,
+        body.dark-mode .window-bar,
+        body.dark-mode .window-title {
+            font-family: 'Electrolize', Arial, sans-serif;
+        }
+        /* Layout */
+        .main-layout {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+            height: 100vh;
+        }
+
+        /* Score Card */
+        .score-card {
+            flex: 1.5 0 0;
+            background: #f7f8fa;
+            border-right: 1.5px solid var(--border-light);
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            position: relative;
+            transition: background 0.4s, color 0.4s, border 0.4s;
+            overflow: hidden;
+            align-items: stretch;
+        }
+
+        .score-card h2 {
+            font-size: 1.1em;
+            margin: 0 0 1em 0;
+            color: #0077b6;
+        }
+        .score-item {
+            margin-bottom: 1em;
+            width: 100%;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .score-value {
+            float: right;
+            font-weight: 700;
+            color: #0077b6;
+        }
+
+        .main-content {
+            flex: 4 1 0;
+            min-width: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            color: #1a233a;
+            margin-top: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.2em;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            border-left: 4px solid var(--border-light);
+            padding-left: 0.5em;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 1em 0;
+        }
+
+        ul, ol {
+            margin: 1em 0 1em 2em;
+        }
+
+        a {
+            color: #1a233a;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #0077b6;
+        }
+
+        pre, code {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Fira Mono', monospace;
+            color: #1a233a;
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            letter-spacing: 0.05em;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1em;
+        }
+
+        /* Clause Cards */
+        .clauses {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 2em;
+        }
+
+        .clause-card {
+            background: #f7f8fa;
+            border: 1.5px solid var(--border-light);
+            transition: background 0.4s, border 0.4s;
+            overflow: hidden;
+        }
+        .clause-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.08em;
+            color: var(--text-dark);
+            background: #f0f2f7;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .clause-title {
+            flex: 1;
+        }
+
+        .clause-score {
+            margin-left: 18px;
+            font-weight: 700;
+            color: #0077b6;
+            font-size: 1em;
+        }
+
+        .clause-toggle {
+            margin-left: 18px;
+            font-size: 1.2em;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .clause-card.open .clause-toggle {
+            transform: rotate(90deg);
+        }
+
+        .clause-content {
+            display: none;
+            padding: 18px 20px;
+            color: var(--text-dark);
+            background: #fff;
+            font-size: 1em;
+        }
+
+        .clause-card.open .clause-content {
+            display: block;
+        }
+
+        /* Mode Switch */
+        .mode-switch {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            z-index: 20;
+        }
+
+        .mode-switch button {
+            background: #f4f4f4;
+            color: var(--text-dark);
+            border: 1.5px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 0 4px var(--border-light);
+            transition: background 0.3s, color 0.3s, border-radius 0.3s;
+        }
+
+        .mode-switch button:hover {
+            background: var(--border-light);
+            color: #0077b6;
+        }
+
+        /* Window Bars - Light Mode */
+        .window-bar {
+            display: flex;
+            width: 100%;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            background: #f0f2f7;
+            border-bottom: 1px solid #e0e6ef;
+            align-items: center;
+            padding: 0 16px;
+            box-sizing: border-box;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window-title {
+            color: #8a90a0;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .window-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d4e0;
+            opacity: 0.5;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark2) 100%);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card {
+            background: var(--bg-dark2);
+            border-right: 1.5px solid var(--purple);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card h2 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-label {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-value {
+            color: var(--rose);
+        }
+
+        body.dark-mode .tldr-section {
+            border-top-color: var(--purple) !important;
+        }
+
+        body.dark-mode .tldr-section h3 {
+            color: var(--cyan) !important;
+        }
+
+        body.dark-mode .tldr-section p {
+            color: var(--text-light) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode h1 {
+            border-bottom: 2px solid var(--rose-soft);
+        }
+
+        body.dark-mode h2 {
+            border-left: 4px solid var(--purple);
+        }
+
+        body.dark-mode h3 {
+            color: var(--rose);
+        }
+
+        body.dark-mode a {
+            color: var(--rose);
+        }
+
+        body.dark-mode a:hover {
+            color: var(--cyan);
+        }
+
+        body.dark-mode pre,
+        body.dark-mode code {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border-left: 3px solid var(--purple);
+        }
+
+        body.dark-mode .footer {
+            color: var(--purple);
+            border-top: 1px solid var(--cyan);
+        }
+
+        body.dark-mode .clause-card {
+            background: var(--bg-dark2);
+            border: 1.5px solid var(--purple);
+        }
+
+        body.dark-mode .clause-header {
+            color: var(--cyan);
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--purple);
+        }
+
+        body.dark-mode .clause-score {
+            color: var(--rose);
+        }
+
+        body.dark-mode .clause-content {
+            color: var(--text-light);
+            background: var(--bg-dark2);
+        }
+
+        body.dark-mode .mode-switch button {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border: 1.5px solid var(--purple);
+            box-shadow: 0 0 4px var(--purple);
+            border-radius: 0;
+        }
+
+        body.dark-mode .mode-switch button:hover {
+            background: var(--bg-dark);
+            color: var(--rose);
+        }
+
+        body.dark-mode .window-bar {
+            background: #191a22;
+            border-bottom: 2px solid var(--purple);
+        }
+
+        body.dark-mode .window-title {
+            color: var(--cyan);
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        body.dark-mode .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--purple);
+            opacity: 0.7;
+        }
+
+        /* Glow Effect for Important Content */
+        .glow {
+            color: var(--important-glow);
+            text-shadow: 0 0 8px var(--rose), 0 0 2px var(--cyan);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Score Card -->
+        <div class="score-card">
+            <div class="window-bar">
+                <span class="window-title">Scorecard</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 40px 18px 18px 18px; flex: 1; display: flex; flex-direction: column; position: relative;">
+                <h2>Quick Read Scorecard</h2>
+                <div class="score-item">
+                    <span class="score-label">Overall Score</span>
+                    <span class="score-value">25/100</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Risk Level</span>
+                    <span class="score-value">Critical</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Read Time</span>
+                    <span class="score-value">3-5 min</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Key Issues</span>
+                    <span class="score-value">3</span>
+                </div>
+                
+                <div class="tldr-section" style="margin-top: 2em; padding-top: 1.5em; border-top: 1.5px solid var(--border-light); transition: border-color 0.4s;">
+                    <h3 style="font-size: 1em; margin: 0 0 0.8em 0; color: var(--text-dark); transition: color 0.4s;">TL;DR</h3>
+                    <p style="margin: 0; font-size: 0.95em; line-height: 1.6; color: var(--text-dark); transition: color 0.4s;">Lyft's Terms of Service are highly unfavorable for consumers, primarily due to mandatory binding arbitration and a class action waiver. This means you give up your right to sue Lyft in court or join group lawsuits, severely limiting your legal recourse. While transparent about these provisions, the lack of detail on AI data usage and the ability for Lyft to unilaterally change terms are also concerning.</p>
+                </div>
+            </div>
+
+            <div class="mode-switch">
+                <button id="modeToggle" aria-label="Toggle dark/light mode">🌞 Light</button>
+            </div>
+
+            <!-- Comparison Window -->
+            <div class="comparison-window" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="window-bar">
+                    <span class="window-title">Comparison</span>
+                    <span class="window-controls">
+                        <span class="window-dot"></span>
+                    </span>
+                </div>
+                <div style="padding: 12px 18px 18px 18px; flex: 1; overflow-y: auto;">
+                    <h3>How does this compare?</h3>
+                    <div class="comparison-content">
+                        Compared to typical industry standards, Lyft's ToS is significantly less consumer-friendly, especially regarding dispute resolution. Mandatory arbitration and class action waivers are common but highly restrictive; Lyft's implementation, particularly for Riders, is among the most stringent, offering little recourse for users.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="window-bar">
+                <span class="window-title">Main Content</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 48px; flex: 1; display: flex; flex-direction: column;">
+                <h1>Lyft Terms of Service Analysis</h1>
+                <div class="clauses">
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Mandatory Arbitration &amp; Class Action Waiver (Section 17)</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This is the most critical clause in the document. It explicitly states that by using the Lyft Platform, you:</p><ul><li><strong>Waive your right to a jury trial:</strong> You cannot take Lyft to court for disputes.</li><li><strong>Agree to binding and final arbitration:</strong> All claims must be resolved through arbitration, a private dispute resolution process, which can be less transparent and more costly for individuals than court.</li><li><strong>Waive your right to participate in class, group, or representative actions:</strong> You cannot join with other users to sue Lyft over common issues, severely limiting your ability to seek justice for widespread problems.</li></ul><p>While Drivers or driver applicants have a limited opportunity to opt out of arbitration for certain claims, <strong>Riders do not have this option</strong>. This clause significantly disadvantages consumers, making it extremely difficult and expensive to pursue legal claims against Lyft.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Modification to the Agreement</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>Lyft reserves the right to modify the terms and conditions of this Agreement at any time. Your continued use of the Lyft Platform after such modifications constitutes your acceptance of the changes. This means:</p><ul><li>Lyft can unilaterally change the rules governing your use of the service.</li><li>The burden is on you to regularly review the terms for updates.</li><li>If you don't agree with new terms, your only recourse is to stop using the platform.</li></ul><p>While common, this clause, especially when combined with the mandatory arbitration, gives Lyft significant power to alter the user agreement without requiring explicit consent for each change beyond continued use.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Eligibility</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause outlines who can use the Lyft Platform. It states that users must have the legal right and authority to enter into the agreement, and that the platform is not available to users whose accounts have been deactivated. It also prohibits allowing others to use your account and states you are the sole authorized user.</p><p>This is a standard and reasonable clause designed to ensure legal capacity and account security, protecting both users and the platform.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">AI/ML Tools</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The definition of the 'Lyft Platform' explicitly includes 'artificial intelligence tools.' While this acknowledges the use of AI, the provided snippet <strong>lacks any specific clauses detailing how these AI tools are used</strong>, what data they process, how they might influence user experiences (e.g., pricing, matching, ratings), or what rights users have regarding AI-driven decisions.</p><p>The absence of transparency around AI usage raises concerns about data privacy, potential algorithmic biases, and the impact of AI on user interactions without clear guidelines or user control.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Supplemental Agreements</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The ToS states that your use of certain Lyft Services (e.g., bike, scooter, or car rentals) may be subject to additional 'Supplemental Agreements.' These supplemental agreements can, in some cases, override the main Terms of Service.</p><p>This adds complexity for users, as it requires reviewing multiple legal documents for different services, potentially leading to confusion or conflicting terms that might be less favorable than the main agreement.</p></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <p>The Lyft Terms of Service, as presented in this document, are significantly skewed in favor of the company, earning a <strong>Critical risk level</strong> for consumers. The most glaring issue is the mandatory arbitration clause paired with a class action waiver. This provision effectively strips users of their right to pursue legal action against Lyft in a traditional court setting or to join with others in a collective lawsuit. For Riders, this limitation is absolute, offering no opt-out.</p><p>Beyond dispute resolution, the terms grant Lyft broad power to unilaterally modify the agreement, with continued use signifying acceptance. While common, this places the onus on users to constantly monitor for changes that could introduce less favorable conditions. The explicit mention of 'artificial intelligence tools' within the platform's definition is also noteworthy, but the document provides no details on how these tools are used, what data they process, or user rights concerning AI-driven decisions. This lack of transparency around AI usage is a significant concern in an era of increasing algorithmic influence.</p><p>In summary, while the document is transparent about its restrictive dispute resolution terms, the overall framework prioritizes corporate protection over consumer rights. Users should be acutely aware that by agreeing to these terms, they are relinquishing substantial legal protections and flexibility. It is advisable for consumers to weigh these significant drawbacks against the convenience offered by the Lyft Platform.</p>
+                </div>
+                <div class="footer">
+                    Generated on October 16, 2025
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modeToggle = document.getElementById('modeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        function setMode(dark) {
+            document.body.classList.toggle('dark-mode', dark);
+            modeToggle.textContent = dark ? '🌙 Dark' : '🌞 Light';
+        }
+        
+        // Load mode from localStorage or system preference
+        const savedMode = localStorage.getItem('darkMode');
+        const darkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+        setMode(darkMode);
+        
+        modeToggle.addEventListener('click', () => {
+            const newMode = !document.body.classList.contains('dark-mode');
+            setMode(newMode);
+            localStorage.setItem('darkMode', newMode);
+        });
+    </script>
+</body>
+</html>

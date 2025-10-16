@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adobe General Terms of Use Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --rose: #ff4081;
+            --rose-soft: #c95a7b;
+            --cyan: #4deeea;
+            --purple: #7c3aed;
+            --bg-dark: #181a24;
+            --bg-dark2: #232136;
+            --bg-light: #fff;
+            --text-dark: #232136;
+            --text-light: #e0d7e5;
+            --border-light: #e0e6ef;
+            --important-glow: #fffbe6;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode .score-card h2,
+        body.dark-mode .window-bar,
+        body.dark-mode .window-title {
+            font-family: 'Electrolize', Arial, sans-serif;
+        }
+        /* Layout */
+        .main-layout {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+            height: 100vh;
+        }
+
+        /* Score Card */
+        .score-card {
+            flex: 1.5 0 0;
+            background: #f7f8fa;
+            border-right: 1.5px solid var(--border-light);
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 1em;
+            position: relative;
+            transition: background 0.4s, color 0.4s, border 0.4s;
+            overflow: hidden;
+            align-items: stretch;
+        }
+
+        .score-card h2 {
+            font-size: 1.1em;
+            margin: 0 0 1em 0;
+            color: #0077b6;
+        }
+        .score-item {
+            margin-bottom: 1em;
+            width: 100%;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .score-value {
+            float: right;
+            font-weight: 700;
+            color: #0077b6;
+        }
+
+        .main-content {
+            flex: 4 1 0;
+            min-width: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            color: #1a233a;
+            margin-top: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.2em;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            border-left: 4px solid var(--border-light);
+            padding-left: 0.5em;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        p {
+            line-height: 1.7;
+            margin: 1em 0;
+        }
+
+        ul, ol {
+            margin: 1em 0 1em 2em;
+        }
+
+        a {
+            color: #1a233a;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #0077b6;
+        }
+
+        pre, code {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Fira Mono', monospace;
+            color: #1a233a;
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            letter-spacing: 0.05em;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1em;
+        }
+
+        /* Clause Cards */
+        .clauses {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 2em;
+        }
+
+        .clause-card {
+            background: #f7f8fa;
+            border: 1.5px solid var(--border-light);
+            transition: background 0.4s, border 0.4s;
+            overflow: hidden;
+        }
+        .clause-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.08em;
+            color: var(--text-dark);
+            background: #f0f2f7;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .clause-title {
+            flex: 1;
+        }
+
+        .clause-score {
+            margin-left: 18px;
+            font-weight: 700;
+            color: #0077b6;
+            font-size: 1em;
+        }
+
+        .clause-toggle {
+            margin-left: 18px;
+            font-size: 1.2em;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .clause-card.open .clause-toggle {
+            transform: rotate(90deg);
+        }
+
+        .clause-content {
+            display: none;
+            padding: 18px 20px;
+            color: var(--text-dark);
+            background: #fff;
+            font-size: 1em;
+        }
+
+        .clause-card.open .clause-content {
+            display: block;
+        }
+
+        /* Mode Switch */
+        .mode-switch {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            z-index: 20;
+        }
+
+        .mode-switch button {
+            background: #f4f4f4;
+            color: var(--text-dark);
+            border: 1.5px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 0 4px var(--border-light);
+            transition: background 0.3s, color 0.3s, border-radius 0.3s;
+        }
+
+        .mode-switch button:hover {
+            background: var(--border-light);
+            color: #0077b6;
+        }
+
+        /* Window Bars - Light Mode */
+        .window-bar {
+            display: flex;
+            width: 100%;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            background: #f0f2f7;
+            border-bottom: 1px solid #e0e6ef;
+            align-items: center;
+            padding: 0 16px;
+            box-sizing: border-box;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window-title {
+            color: #8a90a0;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .window-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d4e0;
+            opacity: 0.5;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark2) 100%);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card {
+            background: var(--bg-dark2);
+            border-right: 1.5px solid var(--purple);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .score-card h2 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-label {
+            color: var(--cyan);
+        }
+
+        body.dark-mode .score-value {
+            color: var(--rose);
+        }
+
+        body.dark-mode .tldr-section {
+            border-top-color: var(--purple) !important;
+        }
+
+        body.dark-mode .tldr-section h3 {
+            color: var(--cyan) !important;
+        }
+
+        body.dark-mode .tldr-section p {
+            color: var(--text-light) !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--cyan);
+        }
+
+        body.dark-mode h1 {
+            border-bottom: 2px solid var(--rose-soft);
+        }
+
+        body.dark-mode h2 {
+            border-left: 4px solid var(--purple);
+        }
+
+        body.dark-mode h3 {
+            color: var(--rose);
+        }
+
+        body.dark-mode a {
+            color: var(--rose);
+        }
+
+        body.dark-mode a:hover {
+            color: var(--cyan);
+        }
+
+        body.dark-mode pre,
+        body.dark-mode code {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border-left: 3px solid var(--purple);
+        }
+
+        body.dark-mode .footer {
+            color: var(--purple);
+            border-top: 1px solid var(--cyan);
+        }
+
+        body.dark-mode .clause-card {
+            background: var(--bg-dark2);
+            border: 1.5px solid var(--purple);
+        }
+
+        body.dark-mode .clause-header {
+            color: var(--cyan);
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--purple);
+        }
+
+        body.dark-mode .clause-score {
+            color: var(--rose);
+        }
+
+        body.dark-mode .clause-content {
+            color: var(--text-light);
+            background: var(--bg-dark2);
+        }
+
+        body.dark-mode .mode-switch button {
+            background: var(--bg-dark2);
+            color: var(--cyan);
+            border: 1.5px solid var(--purple);
+            box-shadow: 0 0 4px var(--purple);
+            border-radius: 0;
+        }
+
+        body.dark-mode .mode-switch button:hover {
+            background: var(--bg-dark);
+            color: var(--rose);
+        }
+
+        body.dark-mode .window-bar {
+            background: #191a22;
+            border-bottom: 2px solid var(--purple);
+        }
+
+        body.dark-mode .window-title {
+            color: var(--cyan);
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        body.dark-mode .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--purple);
+            opacity: 0.7;
+        }
+
+        /* Glow Effect for Important Content */
+        .glow {
+            color: var(--important-glow);
+            text-shadow: 0 0 8px var(--rose), 0 0 2px var(--cyan);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Score Card -->
+        <div class="score-card">
+            <div class="window-bar">
+                <span class="window-title">Scorecard</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 40px 18px 18px 18px; flex: 1; display: flex; flex-direction: column; position: relative;">
+                <h2>Quick Read Scorecard</h2>
+                <div class="score-item">
+                    <span class="score-label">Overall Score</span>
+                    <span class="score-value">59/100</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Risk Level</span>
+                    <span class="score-value">High</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Read Time</span>
+                    <span class="score-value">5-10 min</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Key Issues</span>
+                    <span class="score-value">2</span>
+                </div>
+                
+                <div class="tldr-section" style="margin-top: 2em; padding-top: 1.5em; border-top: 1.5px solid var(--border-light); transition: border-color 0.4s;">
+                    <h3 style="font-size: 1em; margin: 0 0 0.8em 0; color: var(--text-dark); transition: color 0.4s;">TL;DR</h3>
+                    <p style="margin: 0; font-size: 0.95em; line-height: 1.6; color: var(--text-dark); transition: color 0.4s;">Adobe's ToS offers strong protections regarding user content ownership and a clear commitment *not* to train generative AI on your content (unless submitted to Adobe Stock). However, it includes a critical mandatory arbitration clause with a class action waiver, significantly limiting your legal recourse, and standard but restrictive disclaimers of warranties and limitations of liability.</p>
+                </div>
+            </div>
+
+            <div class="mode-switch">
+                <button id="modeToggle" aria-label="Toggle dark/light mode">🌞 Light</button>
+            </div>
+
+            <!-- Comparison Window -->
+            <div class="comparison-window" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="window-bar">
+                    <span class="window-title">Comparison</span>
+                    <span class="window-controls">
+                        <span class="window-dot"></span>
+                    </span>
+                </div>
+                <div style="padding: 12px 18px 18px 18px; flex: 1; overflow-y: auto;">
+                    <h3>How does this compare?</h3>
+                    <div class="comparison-content">
+                        This ToS is notably better than many industry peers in its explicit stance against training generative AI on user content, a common concern today. However, its mandatory arbitration and class action waiver clauses are standard but highly unfavorable, placing it on par with or worse than many large tech companies in terms of dispute resolution.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="window-bar">
+                <span class="window-title">Main Content</span>
+                <span class="window-controls">
+                    <span class="window-dot"></span>
+                </span>
+            </div>
+            <div style="padding: 48px; flex: 1; display: flex; flex-direction: column;">
+                <h1>Adobe General Terms of Use Analysis</h1>
+                <div class="clauses">
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Privacy &amp; Data Usage (Access to Your Content, Content Analytics, Generative AI)</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This section details how Adobe accesses and uses your content. Key points:</p><ul><li><strong>Operational Access:</strong> Adobe accesses your content as necessary to operate its services and software (e.g., opening a Photoshop file).</li><li><strong>No Local Content Scanning:</strong> Adobe explicitly states it <strong>does not scan or review content stored locally on your device</strong>. This is a significant consumer-friendly point.</li><li><strong>Cloud Content Scanning:</strong> Content uploaded to Adobe's servers (Cloud Content) may be automatically scanned for illegal or abusive material (e.g., Child Sexual Abuse Material, spam, phishing). If flagged, human review may occur.</li><li><strong>Generative AI Training:</strong> Adobe states it <strong>will not use your Local or Cloud Content to train generative AI models</strong>, unless you explicitly choose to submit that content to the Adobe Stock marketplace, which is governed by a separate agreement. This is a very strong positive for consumer privacy in the age of AI.</li><li><strong>Content Analytics:</strong> Adobe may perform "Content Analytics" on Cloud Content to improve services, provide recommendations, customize experiences, and inform marketing. However, users have <strong>opt-out rights</strong> for this.</li><li><strong>Human Review:</strong> Human review of Cloud Content occurs in limited circumstances: upon your request, when content is made public, or when it's flagged as illegal/abusive.</li></ul><p>Overall, the strong stance on not scanning local content and not training AI on user content (unless explicitly opted-in via Adobe Stock) makes this clause largely consumer-friendly, despite the cloud content scanning and analytics for marketing (which has an opt-out).</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Dispute Resolution, Class Action Waiver, Arbitration Agreement</span>
+                            <span class="clause-score">Critical</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>The mere presence of this clause title, "Dispute Resolution, <strong>Class Action Waiver, Arbitration Agreement</strong>," indicates a significant consumer risk. While the full text is not provided, such clauses typically:</p><ul><li><strong>Mandatory Arbitration:</strong> Force disputes into binding arbitration, an out-of-court process that can be less transparent and more costly for consumers than traditional litigation.</li><li><strong>Class Action Waiver:</strong> Prohibit users from joining class-action lawsuits, meaning consumers cannot collectively sue Adobe even if many users are affected by the same issue. This severely limits consumer power and recourse.</li></ul><p>These types of clauses are generally considered highly unfavorable to consumers, as they strip away fundamental legal rights and make it much harder to hold companies accountable for widespread issues.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">DISCLAIMERS OF WARRANTIES</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause, common in software and service agreements, typically states that Adobe provides its services and software "as is" and "as available," without any warranties or guarantees of any kind. This means:</p><ul><li>Adobe does not guarantee that the services will be uninterrupted, error-free, secure, or free from viruses.</li><li>Adobe disclaims all implied warranties, such as warranties of merchantability, fitness for a particular purpose, and non-infringement.</li></ul><p>While standard, this clause shifts the risk of service disruptions, bugs, or unsuitability for specific needs entirely onto the user, limiting Adobe's accountability for performance or quality issues.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">LIMITATION OF LIABILITY</span>
+                            <span class="clause-score">Bad</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause, also standard in many ToS, aims to limit Adobe's financial responsibility for any damages or losses you might incur from using their services or software. Typically, it:</p><ul><li>Caps Adobe's liability to a specific amount, often the fees you paid for the service in a certain period (e.g., 12 months) or a very low fixed sum.</li><li>Excludes liability for indirect, incidental, special, consequential, or punitive damages (e.g., lost profits, lost data, business interruption).</li></ul><p>This means that even if Adobe's negligence causes significant harm or data loss, your ability to recover full compensation may be severely restricted, potentially leaving you with substantial uncompensated losses.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Updates to Terms</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>This clause states that Adobe will notify users of "important changes" to the terms or subscriptions. This commitment to notification is a positive aspect, as it provides users with an opportunity to review updated terms and decide if they wish to continue using the service.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">Your Content (Ownership &amp; Business Users)</span>
+                            <span class="clause-score">Good</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>Adobe explicitly states, "<strong>No one but you owns your content</strong>," which is a strong positive for individual users. However, it's crucial to note the distinction for business users:</p><ul><li><strong>Individual Plans:</strong> You retain full ownership and control over your content.</li><li><strong>Business Plans:</strong> Your organization (employer) will have access to and control over your work created under that plan.</li></ul><p>This distinction is standard for enterprise software but is an important clarification for users to understand who controls their creative output depending on their account type.</p></div>
+                    </div>
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="clause-title">AI/ML (No Modifications, Reverse Engineering, Artificial Intelligence/Machine Learning (AI/ML))</span>
+                            <span class="clause-score">Concerning</span>
+                            <span class="clause-toggle">&#9654;</span>
+                        </div>
+                        <div class="clause-content"><p>While the full text of this section isn't provided, its title, "No Modifications, Reverse Engineering, Artificial Intelligence/Machine Learning (AI/ML)," strongly suggests restrictions on how users can interact with Adobe's software and services.</p><ul><li>It likely prohibits users from reverse engineering Adobe's software.</li><li>It may also restrict users from using Adobe's software, services, or content (e.g., Sample Files, Content Files) for their own AI/ML training purposes, especially if it could create competing models or services.</li></ul><p>Such restrictions are common for proprietary software to protect intellectual property and business models. While understandable from a company perspective, it limits the flexibility of advanced users or developers who might want to integrate Adobe's tools into their own AI workflows in novel ways.</p></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <p>Adobe's General Terms of Use present a mixed bag for consumers, featuring some commendable protections alongside significant limitations on user rights. On the positive side, Adobe makes a strong commitment regarding your content: it explicitly states that <strong>you own your content</strong> and, crucially, that it <strong>will not use your Local or Cloud Content to train generative AI models</strong> unless you specifically submit it to the Adobe Stock marketplace. This is a significant and consumer-friendly stance, especially in the current technological landscape. Furthermore, Adobe assures users that it does not scan or review content stored locally on your device, enhancing privacy for your offline work.</p><p>However, the document contains several clauses that significantly favor Adobe and limit consumer recourse. The most critical concern is the inclusion of a <strong>Mandatory Arbitration and Class Action Waiver</strong>. This clause effectively strips users of their right to sue Adobe in court and prevents them from joining class-action lawsuits, forcing disputes into a private arbitration process that often benefits the company. Additionally, the standard <strong>Disclaimers of Warranties</strong> mean services are provided "as-is," and the <strong>Limitation of Liability</strong> clause severely restricts the amount of damages you can claim from Adobe, even in cases of significant harm or data loss.</p><p>Other aspects include Adobe's right to scan Cloud Content for illegal or abusive material (like CSAM), which is a common practice for platform safety but means your cloud-stored data is subject to automated and potential human review. Content Analytics on Cloud Content may be used for product improvement, recommendations, customization, and even marketing, though users are provided with opt-out rights. The terms also clarify that for business users, the organization, not the individual, controls the content created under a business plan, which is an important distinction.</p><p>In conclusion, while Adobe has made laudable efforts in clarifying its stance on AI training and user content ownership for individual plans, the presence of a mandatory arbitration clause with a class action waiver remains a major drawback, significantly impacting consumer rights. Users should weigh the benefits of Adobe's strong content ownership and AI training policies against the substantial limitations on their legal recourse should disputes arise.</p>
+                </div>
+                <div class="footer">
+                    Generated on October 16, 2025
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modeToggle = document.getElementById('modeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        function setMode(dark) {
+            document.body.classList.toggle('dark-mode', dark);
+            modeToggle.textContent = dark ? '🌙 Dark' : '🌞 Light';
+        }
+        
+        // Load mode from localStorage or system preference
+        const savedMode = localStorage.getItem('darkMode');
+        const darkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+        setMode(darkMode);
+        
+        modeToggle.addEventListener('click', () => {
+            const newMode = !document.body.classList.contains('dark-mode');
+            setMode(newMode);
+            localStorage.setItem('darkMode', newMode);
+        });
+    </script>
+</body>
+</html>
